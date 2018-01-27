@@ -18,6 +18,9 @@ const Headlines = new Schema({
     type: String,
     unique: true,
     required: true
+  },
+  imgURL: {
+    type: String
   }
 });
 

@@ -36,13 +36,21 @@ let headlineInsert = function(links, index, res){
 
 
 router.get("/", function(req, res){
-     mmorpgHeadlines.grabNews(function(results){
-        //console.log("links: "+results)
-        mongoConnection.connect();
+    mongoConnection.connect();
 
-        headlineInsert(results, 0, res);
-    },0,null,[]);
+    headlinesModel.find({}).limit(15).then(function(results){
+        res.render("index", {results:results});
+    });
 });
+
+// router.get("/", function(req, res){
+//      mmorpgHeadlines.grabNews(function(results){
+//         //console.log("links: "+results)
+//         mongoConnection.connect();
+
+//         headlineInsert(results, 0, res);
+//     },0,null,[]);
+// });
 
 // Export routes for server.js to use.
 module.exports = router;

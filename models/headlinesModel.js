@@ -21,6 +21,14 @@ const Headlines = new Schema({
   },
   imgURL: {
     type: String
+  },
+  postDate: {
+    type: Date,
+    required: true
+  },
+  source: {
+    type: String,
+    required: true
   }
 });
 

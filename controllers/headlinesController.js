@@ -50,8 +50,10 @@ router.get("/scrap", function(req, res){
 router.get("/:id", function(req, res){
     mongoConnection.connect();
 
-    db.headlines.find({_id: mongojs.ObjectId(req.params.id)}).then(function(results){
-        res.render("comments", {results:results});
+    db.headlines.findOne({'_id': mongojs.ObjectId(req.params.id)})
+    .populate("comments")
+    .exec(function(error,results){
+        res.render("comments", results);
     });
 });
 

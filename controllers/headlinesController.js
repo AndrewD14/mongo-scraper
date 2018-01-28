@@ -3,7 +3,7 @@ const express = require("express");
 const mongojs = require("mongojs");
 
 //imports loacl files
-const headlinesModel = require('../models/headlinesModel.js');
+const db = require('../models/mongoDbModels.js');
 const mongoConnection = require('../connection/connection.js');
 //const mmorpgHeadlines = require('./appFunc/mmorpgNewsScraper.js');
 const destructoidHeadlines = require('./appFunc/destructoidScraper.js');
@@ -15,8 +15,8 @@ let router = express.Router();
 //function that inserts recursively
 let headlineInsert = function(links, index, res){
    // console.log(links[index])
-    headlinesModel.init().then(function(){
-        headlinesModel.create(links[index])
+    db.headlines.init().then(function(){
+        db.headlines.create(links[index])
         .then(function(results){
             if(index < links.length-1)
                 headlineInsert(links, index+1, res);
@@ -50,7 +50,7 @@ router.get("/scrap", function(req, res){
 router.get("/:id", function(req, res){
     mongoConnection.connect();
 
-    headlinesModel.find({_id: mongojs.ObjectId(req.params.id)}).then(function(results){
+    db.headlines.find({_id: mongojs.ObjectId(req.params.id)}).then(function(results){
         res.render("comments", {results:results});
     });
 });
@@ -59,7 +59,7 @@ router.get("/:id", function(req, res){
 router.get("/", function(req, res){
     mongoConnection.connect();
 
-    headlinesModel.find({}).sort({postDate: -1}).limit(10).then(function(results){
+    db.headlines.find({}).sort({postDate: -1}).limit(10).then(function(results){
         res.render("index", {results:results});
     });
 });

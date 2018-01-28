@@ -1,3 +1,4 @@
+//imports npm packages
 const mongoose = require('mongoose');
 
 // Save a reference to the Schema constructor
@@ -29,7 +30,13 @@ const Headlines = new Schema({
   source: {
     type: String,
     required: true
-  }
+  },
+  comments:[
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment"
+    }
+  ]
 });
 
 // This creates our model from the above schema, using mongoose's model method

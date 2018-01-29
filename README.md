@@ -6,7 +6,7 @@ This application runs a website through express to provide the functionality to 
 
 Please visit https://afternoon-eyrie-61915.herokuapp.com/ for a working version.
 
-If you would like to use the code, download the latest and run npm install in the directory. Then node server.js to get the website running. The url will then be localhost:3000
+If you would like to use the code, download the latest and run command `npm install` in the directory. Then command `node server.js` to get the website running. The url will then be localhost:3000
 
 ### Prerequisites
 

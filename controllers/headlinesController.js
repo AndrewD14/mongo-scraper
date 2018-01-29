@@ -126,6 +126,7 @@ router.get("/", function(req, res){
 
     db.headlines.find({}).sort({postDate: -1})
     .exec(function(error, results){
+        let pageResults = [];
         if(results){
             let pageCount = results.length/PAGESPLIT;
             if(results.length % PAGESPLIT > 0)

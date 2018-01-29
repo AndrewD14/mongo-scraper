@@ -17,24 +17,27 @@ const PAGESPLIT = 5;
 
 //function that inserts recursively
 let headlineInsert = function(links, index, res){
-   // console.log(links[index])
+   let count = 0;
     db.headlines.init().then(function(){
         db.headlines.create(links[index])
         .then(function(results){
+            count++;
             if(index < links.length-1)
                 headlineInsert(links, index+1, res);
             else
-                res.redirect("/");
+                res.json({status:"OK", insert: count});
         })
         .catch(function(error){
             if(error.code == 11000){
                 if(index < links.length-1)
                     headlineInsert(links, index+1, res);
                 else
-                    res.redirect("/");
+                    res.json({status:"OK", insert: count});
             }
-            else
-                res.json({status: 'failed', insertCount: index, errorMsg:error});
+            else{
+                console.log(error);
+                res.json({status: 'failed'});
+            }
         });
     });
 }
@@ -42,7 +45,6 @@ let headlineInsert = function(links, index, res){
 //starts the request to scrap for new news
 router.get("/scrap", function(req, res){
     destructoidHeadlines.grabNews(function(results){
-       //console.log("links: "+results)
        mongoConnection.connect();
 
        headlineInsert(results, 0, res);

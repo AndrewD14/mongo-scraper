@@ -11,6 +11,8 @@ const destructoidHeadlines = require('./appFunc/destructoidScraper.js');
 //creates the router controller from the express servers
 let router = express.Router();
 
+//global variable
+const PAGESPLIT = 5;
 
 //function that inserts recursively
 let headlineInsert = function(links, index, res){
@@ -57,12 +59,59 @@ router.get("/article/:id", function(req, res){
     });
 });
 
+//next page homepage
+router.get("/page/:pageNum", function(req, res){
+    mongoConnection.connect();
+
+    db.headlines.find({}).sort({postDate: -1})
+    .exec(function(error, results){
+        let pageNum = parseInt(req.params.pageNum);
+
+        let pageCount = results.length/PAGESPLIT;
+        if(results.length % PAGESPLIT > 0)
+            pageCount++;
+
+        let pages = [];
+        for(let i = 2; i <= pageCount; i++)
+            pages.push(i);
+
+        let next = null;
+        if(pageNum+1 <= pageCount)
+            next = pageNum+1;
+
+        let previous = null;
+        if(pageNum-1 > 0)
+            previous = pageNum-1;
+
+        let first = null;
+        if(pageNum > 1)
+            first = 1;
+            
+        let last = null;
+        if(pageNum != pageCount)
+            last = pageCount;
+
+        let pageResults = results.slice(PAGESPLIT*(pageNum-1),PAGESPLIT*pageNum);
+        res.render("page", {results:pageResults, pages:pages, previous: previous, next:next, first:first, last:last});
+    });
+});
+
 //main homepage
 router.get("/", function(req, res){
     mongoConnection.connect();
 
-    db.headlines.find({}).sort({postDate: -1}).limit(10).then(function(results){
-        res.render("index", {results:results});
+    db.headlines.find({}).sort({postDate: -1})
+    .exec(function(error, results){
+        let pageCount = results.length/PAGESPLIT;
+        if(results.length % PAGESPLIT > 0)
+            pageCount++;
+
+        let pages = [];
+        for(let i = 2; i <= pageCount; i++)
+            pages.push(i);
+
+        let pageResults = results.slice(0,PAGESPLIT);
+        res.render("index", {results:pageResults, pages:pages, last:pageCount});
     });
 });
 

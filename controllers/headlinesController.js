@@ -47,7 +47,7 @@ router.get("/scrap", function(req, res){
 });
 
 //pulls up 1 news article with comments
-router.get("/:id", function(req, res){
+router.get("/article/:id", function(req, res){
     mongoConnection.connect();
 
     db.headlines.findOne({'_id': mongojs.ObjectId(req.params.id)})
@@ -63,6 +63,41 @@ router.get("/", function(req, res){
 
     db.headlines.find({}).sort({postDate: -1}).limit(10).then(function(results){
         res.render("index", {results:results});
+    });
+});
+
+//insert new comments
+router.post("/newComment/:id", function(req, res){
+    mongoConnection.connect();
+
+    db.comment.create(req.body)
+    .then(function(dbComment){
+        return db.headlines.findOneAndUpdate({'_id': mongojs.ObjectId(req.params.id)}, {$push: {comments: dbComment._id}}, {new: true});
+    })
+    .then(function(dbHeadlines){
+        res.redirect("/article/"+dbHeadlines._id);
+    })
+    .catch(function(err) {
+    // If an error occurs, send it back to the client
+    res.json(err);
+    });
+});
+
+//remove comments
+router.post("/remove-comment/:id", function(req, res){
+    mongoConnection.connect();
+    let articleId = req.headers.referer.substring(req.headers.referer.lastIndexOf("/")+1);
+
+    db.comment.remove({'_id': mongojs.ObjectId(req.params.id)})
+    .then(function(dbComment){
+        return db.headlines.findOneAndUpdate({'_id': mongojs.ObjectId(articleId)}, {$pull: {comments: mongojs.ObjectId(req.params.id)}});
+    })
+    .then(function(dbHeadlines){
+        res.redirect("/article/"+dbHeadlines._id);
+    })
+    .catch(function(err) {
+        // If an error occurs, send it back to the client
+        res.json(err);
     });
 });
 

@@ -10,7 +10,7 @@
             <button class="btn btn-secondary" type="button">
                 Add to Favorites
             </button>
-            <a href="/{{_id}}" class="btn btn-info">View Comments</a>
+            <a href="/article/{{_id}}" class="btn btn-info">View Comments</a>
         </p>
         <div class="collapse" id="{{_id}}">
             <div class="card card-body">
@@ -18,6 +18,8 @@
                 <img src={{imgURL}} class="newsImg" style="width:35%;"/>
             </div>
         </div>
+    {{else}}
+        <p>No articles to display.</p>
     {{/each}}
     <nav aria-label="Page navigation example">
         <ul class="pagination">

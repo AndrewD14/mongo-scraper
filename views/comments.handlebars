@@ -1,10 +1,14 @@
 <div>
     <h1>Comments</h1>
     <h4><a href={{url}} target="_blank">{{headlines}}</a></h4>
+    <button type="submit" class="btn btn-md btn-primary" data-toggle="modal" data-target="#addCommentModal"><span class="glyphicon glyphicon-plus"></span>Add Comment</button>
     {{#each comments}}
-        <p>
+        <div>
             {{message}}
-        </p>
+            <form action="/remove-comment/{{_id}}" method="POST"><button type="submit" class="btn btn-danger">X</button></form>
+        </div>
+    {{else}}
+        <p>No comments yet.</p>
     {{/each}}
     <nav aria-label="Page navigation example">
         <ul class="pagination">
@@ -16,3 +20,28 @@
         </ul>
     </nav>
 </div>
+<!-- Modal -->
+<div id="addCommentModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">New Comment</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- form content-->
+                <form id="newCommentForm" action="/newComment/{{_id}}" method="POST">
+                    <fieldset>
+                        <div class="form-group"> 
+                            <label for="">Comment</label>
+                            <textarea class="form-control" rows="4" cols="50" name="message"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-secondary btn-lg">Submit</button>
+                        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Cancel</button>
+                    </fieldset>
+                </form> <!-- /end form -->
+            </div>
+        </div>
+    </div>
+</div> <!-- /end updateModal -->

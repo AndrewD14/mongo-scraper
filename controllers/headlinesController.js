@@ -1,11 +1,12 @@
 //imports npm packages
 const express = require("express");
 const mongojs = require("mongojs");
+const dateFormat = require("dateformat")
 
 //imports loacl files
 const db = require('../models/mongoDbModels.js');
 const mongoConnection = require('../connection/connection.js');
-//const mmorpgHeadlines = require('./appFunc/mmorpgNewsScraper.js');
+//const mmorpgHeadlines = require('./appFunc/mmorpgNewsScraper.js'); //disabled due to getting hit with a reCaptcha
 const destructoidHeadlines = require('./appFunc/destructoidScraper.js');
 
 //creates the router controller from the express servers
@@ -55,6 +56,7 @@ router.get("/article/:id", function(req, res){
     db.headlines.findOne({'_id': mongojs.ObjectId(req.params.id)})
     .populate("comments")
     .exec(function(error,results){
+        results.postDt = dateFormat(results.postDate, "dddd, mmmm dS, yyyy", false, false);
         res.render("comments", results);
     });
 });
@@ -92,6 +94,9 @@ router.get("/page/:pageNum", function(req, res){
             last = pageCount;
 
         let pageResults = results.slice(PAGESPLIT*(pageNum-1),PAGESPLIT*pageNum);
+
+        for(i in pageResults)
+            pageResults[i].postDt = dateFormat(pageResults[i].postDate, "dddd, mmmm dS, yyyy", false, false);
         res.render("page", {results:pageResults, pages:pages, previous: previous, next:next, first:first, last:last});
     });
 });
@@ -103,6 +108,8 @@ router.get("/fav/:id", function(req, res){
     db.favorite.findOne({'user': req.params.id})
     .populate("list")
     .exec(function(error,results){
+        for(i in results.list)
+            results.list[i].postDt = dateFormat(results.list[i].postDate, "dddd, mmmm dS, yyyy", false, false);
         res.render("favorites", {results:results});
     });
 });
@@ -122,6 +129,9 @@ router.get("/", function(req, res){
             pages.push(i);
 
         let pageResults = results.slice(0,PAGESPLIT);
+
+        for(i in pageResults)
+            pageResults[i].postDt = dateFormat(pageResults[i].postDate, "dddd, mmmm dS, yyyy", false, false);
         res.render("index", {results:pageResults, pages:pages, last:pageCount});
     });
 });

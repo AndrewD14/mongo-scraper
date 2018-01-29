@@ -4,8 +4,8 @@ $("#scrap").on("click", function(){
         method:"GET"
     }).done(function(data){
         if(data.status === "OK")
-            $("#scrap-info").html("Insert "+data.insert+" new articles.");
+            $("#scrapMsg").html("Insert "+data.insert+" new articles.");
         else
-            $("#scrap-info").html("There was an error with inserting articles.");
+            $("#scrapMsg").html("There was an error with inserting articles.");
     });
 });

@@ -16,23 +16,23 @@ let router = express.Router();
 const PAGESPLIT = 5;
 
 //function that inserts recursively
-let headlineInsert = function(links, index, res){
-   let count = 0;
+let headlineInsert = function(links, index, res, count){
+    let counter = count;
     db.headlines.init().then(function(){
         db.headlines.create(links[index])
         .then(function(results){
-            count++;
+            counter++;
             if(index < links.length-1)
-                headlineInsert(links, index+1, res);
+                headlineInsert(links, index+1, res, counter);
             else
-                res.json({status:"OK", insert: count});
+                res.json({status:"OK", insert: counter});
         })
         .catch(function(error){
             if(error.code == 11000){
                 if(index < links.length-1)
-                    headlineInsert(links, index+1, res);
+                    headlineInsert(links, index+1, res, counter);
                 else
-                    res.json({status:"OK", insert: count});
+                    res.json({status:"OK", insert: counter});
             }
             else{
                 console.log(error);
@@ -47,7 +47,7 @@ router.get("/scrap", function(req, res){
     destructoidHeadlines.grabNews(function(results){
        mongoConnection.connect();
 
-       headlineInsert(results, 0, res);
+       headlineInsert(results, 0, res, 0);
    },1,null,[]);
 });
 
@@ -85,7 +85,7 @@ router.get("/page/:pageNum", function(req, res){
             if(results.length % PAGESPLIT > 0)
                 pageCount++;
 
-            for(let i = 2; i <= pageCount; i++)
+            for(let i = 1; i <= pageCount; i++)
                 pages.push(i);
 
             if(pageNum+1 <= pageCount)
@@ -138,7 +138,7 @@ router.get("/", function(req, res){
                 pageCount++;
 
             pages = [];
-            for(let i = 2; i <= pageCount; i++)
+            for(let i = 1; i <= pageCount; i++)
                 pages.push(i);
 
             pageResults = results.slice(0,PAGESPLIT);

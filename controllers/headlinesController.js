@@ -81,7 +81,7 @@ router.get("/page/:pageNum", function(req, res){
         if(results){
             pageNum = parseInt(req.params.pageNum);
 
-            pageCount = results.length/PAGESPLIT;
+            pageCount = Math.floor(results.length/PAGESPLIT);
             if(results.length % PAGESPLIT > 0)
                 pageCount++;
 
@@ -133,7 +133,7 @@ router.get("/", function(req, res){
         let pageCount = null;
         let pages = [];
         if(results){
-            pageCount = results.length/PAGESPLIT;
+            pageCount = Math.floor(results.length/PAGESPLIT);
             if(results.length % PAGESPLIT > 0)
                 pageCount++;
 

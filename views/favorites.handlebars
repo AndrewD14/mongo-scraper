@@ -1,18 +1,16 @@
 <div>
-    <h1>Articles</h1>
-    {{#each results}}
+    <h1>Favorite Articles</h1>
+    {{#each results.list}}
         <p>
             <h4><a href={{url}} target="_blank">{{headlines}}</a></h4>
             <p>{{postDate}}</p>
             <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#{{_id}}" aria-expanded="false" aria-controls="{{_id}}">
                 Show news summary
             </button>
-            <form action="/addFav/{{_id}}" method="POST">
-                <button class="btn btn-secondary" type="submit">
-                    Add to Favorites
-                </button>
-            </form>
             <a href="/article/{{_id}}" class="btn btn-info">View Comments</a>
+            <form action="/remove-fav/{{_id}}" method="POST">
+                <button class="btn btn-danger" type="submit">Remove Favorite</button>
+            </form>
         </p>
         <div class="collapse" id="{{_id}}">
             <div class="card card-body">

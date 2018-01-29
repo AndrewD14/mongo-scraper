@@ -96,6 +96,17 @@ router.get("/page/:pageNum", function(req, res){
     });
 });
 
+//loads the favorite page
+router.get("/fav/:id", function(req, res){
+    mongoConnection.connect();
+
+    db.favorite.findOne({'user': req.params.id})
+    .populate("list")
+    .exec(function(error,results){
+        res.render("favorites", {results:results});
+    });
+});
+
 //main homepage
 router.get("/", function(req, res){
     mongoConnection.connect();
@@ -112,6 +123,21 @@ router.get("/", function(req, res){
 
         let pageResults = results.slice(0,PAGESPLIT);
         res.render("index", {results:pageResults, pages:pages, last:pageCount});
+    });
+});
+
+//add to fav
+router.post("/addFav/:id", function(req, res){
+    mongoConnection.connect();
+
+    //did not implement a log in function. (Defaulting to a value of 1 for first user)
+    db.favorite.findOneAndUpdate({user: 1}, {$push: {list: mongojs.ObjectId(req.params.id)}}, {upsert:true})
+    .then(function(dbFavorite){
+        res.redirect("/fav/1");
+    })
+    .catch(function(err) {
+    // If an error occurs, send it back to the client
+    res.json(err);
     });
 });
 
@@ -143,6 +169,21 @@ router.post("/remove-comment/:id", function(req, res){
     })
     .then(function(dbHeadlines){
         res.redirect("/article/"+dbHeadlines._id);
+    })
+    .catch(function(err) {
+        // If an error occurs, send it back to the client
+        res.json(err);
+    });
+});
+
+//remove favorite
+router.post("/remove-fav/:id", function(req, res){
+    mongoConnection.connect();
+    let user = req.headers.referer.substring(req.headers.referer.lastIndexOf("/")+1);
+
+    db.favorite.findOneAndUpdate({'user': user}, {$pull: {list: mongojs.ObjectId(req.params.id)}})
+    .then(function(dbfavorite){
+        res.redirect("/fav/"+user);
     })
     .catch(function(err) {
         // If an error occurs, send it back to the client

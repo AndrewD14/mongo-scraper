@@ -13,7 +13,8 @@ const Favorite = new Schema({
     list:[
         {
           type: Schema.Types.ObjectId,
-          ref: "Headlines"
+          ref: "Headlines",
+          unique: true
         }
       ]
 });

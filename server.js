@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const exphbs = require("express-handlebars");
+const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 
@@ -13,6 +14,9 @@ let app = express();
 
 // Use body-parser for handling form submissions
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// Serve static content for the app from the "public" directory in the application directory.
+app.use(express.static(path.join(__dirname,"public")));
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");

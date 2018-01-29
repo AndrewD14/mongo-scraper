@@ -1,13 +1,22 @@
 <div>
     <h1>Comments</h1>
-    <h4><a href={{url}} target="_blank">{{headlines}}</a></h4>
-    {{postDt}}
-    <button type="submit" class="btn btn-md btn-primary" data-toggle="modal" data-target="#addCommentModal"><span class="glyphicon glyphicon-plus"></span>Add Comment</button>
-    {{#each comments}}
-        <div>
-            {{message}}
-            <form action="/remove-comment/{{_id}}" method="POST"><button type="submit" class="btn btn-danger">X</button></form>
+    <div class="row">
+        <div class="col">
+            <h5><a href={{url}} target="_blank">{{headlines}}</a></h5>
         </div>
+    </div>
+    <div class="w-100"></div>
+    <div class="row">
+        <div class="col">{{postDt}}</div>
+    </div>
+    <button type="submit" class="badge badge-primary" data-toggle="modal" data-target="#addCommentModal"><span class="glyphicon glyphicon-plus"></span>Add Comment</button>
+    <hr>
+    {{#each comments}}
+        <div class="row">
+            <div class="col"><p>{{message}}</p></div>
+            <div class="col-2"><form action="/remove-comment/{{_id}}" method="POST"><button type="submit" class="badge badge-danger">X</button></form></div>
+        </div>
+        <hr class="style-seven">
     {{else}}
         <p>No comments yet.</p>
     {{/each}}
@@ -29,8 +38,8 @@
                             <label for="">Comment</label>
                             <textarea class="form-control" rows="4" cols="50" name="message"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-secondary btn-lg">Submit</button>
-                        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="badge badge-secondary">Submit</button>
+                        <button type="button" class="badge badge-danger" data-dismiss="modal">Cancel</button>
                     </fieldset>
                 </form> <!-- /end form -->
             </div>

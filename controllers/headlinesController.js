@@ -6,7 +6,7 @@ const dateFormat = require("dateformat")
 //imports loacl files
 const db = require('../models/mongoDbModels.js');
 const mongoConnection = require('../connection/connection.js');
-//const mmorpgHeadlines = require('./appFunc/mmorpgNewsScraper.js'); //disabled due to getting hit with a reCaptcha
+const mmorpgHeadlines = require('./appFunc/mmorpgNewsScraper.js'); //disabled due to getting hit with a reCaptcha
 const destructoidHeadlines = require('./appFunc/destructoidScraper.js');
 
 //creates the router controller from the express servers
@@ -45,6 +45,7 @@ let headlineInsert = function(links, index, res, count){
 //starts the request to scrap for new news
 router.get("/scrap", function(req, res){
     destructoidHeadlines.grabNews(function(results){
+        //mmorpgHeadlines.grabNews(function(results){
        mongoConnection.connect();
 
        headlineInsert(results, 0, res, 0);

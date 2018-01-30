@@ -12,7 +12,6 @@ const grabNews = function(cb, pageNum, html, results){
     request(url, function(error, response, html) {
         let $ = cheerio.load(html);
         $(".newsfeed .newsitem").each(function(i, element) {
-            console.log("I am here")
             //general html url
             let baseURL = "https://www.mmorpg.com";
 
@@ -61,7 +60,7 @@ const grabNews = function(cb, pageNum, html, results){
 
         if(pageNum < 21) //set to grab first 20 pages
             //using a timeout to slow the website crawler to be nice to the server
-            setTimeout(grabNews(cb, pageNum+1, "https://www.mmorpg.com/news/page/"+pageNum, results),1500);
+            setTimeout(grabNews,1500, cb, pageNum+1, "https://www.mmorpg.com/news/page/"+pageNum, results);
         else
             cb(results);
     });
